@@ -1,0 +1,16 @@
+# Configuration file for pre-commit hooks provided by this repository
+- id: prepend-jira-issue
+  name: Prepend Jira Issue to Commit Message
+  entry: prepend-jira-issue
+  language: python
+  description: Automatically prepend Jira issue(s) from branch name to commit message
+  pass_filenames: false
+  stages: [commit-msg]
+
+- id: example-prefix-hook
+  name: Example Prefix Hook
+  entry: example-prefix-hook
+  language: python
+  description: Example hook that adds a custom prefix to commit messages
+  pass_filenames: false
+  stages: [commit-msg]

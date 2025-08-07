@@ -1,0 +1,27 @@
+fail_fast: true
+repos:
+  - repo: https://github.com/infinitelambda/pre-commit-jira-helper
+    rev: v0.1.0  # Use the latest version
+    hooks:
+      - id: prepend-jira-issue
+        stages: [commit-msg]
+        # Uncomment and customize these args as needed:
+        
+        # Basic usage - extracts ALL Jira issues matching the pattern:
+        # On branch 'feature/ABC-123-DEF-456-new-feature' -> 'ABC-123, DEF-456: commit message'
+        # (no args needed for default behavior)
+        
+        # Restrict to specific Jira project prefixes only:
+        # On branch 'feature/ABC-123-XYZ-999-DEF-456-test' -> 'ABC-123, DEF-456: commit message' 
+        # args: ["--prefixes", "ABC,DEF"]
+        
+        # Custom pattern and separator:
+        # args: ["--pattern", "[A-Z]{3,}-\\d+", "--separator", " - "]
+        
+        # Combine all options:
+        # args: ["--prefixes", "PROJ,TASK", "--pattern", "[A-Z]{3,}-\\d+", "--separator", " | "]
+
+      # CAUTION: This is only for example purposes
+      - id: example-prefix-hook
+        stages: [commit-msg]
+        args: ["--prefix", "[COMMIT]"]

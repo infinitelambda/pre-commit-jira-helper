@@ -1,74 +1,203 @@
-# Your Project
-Provide a short description explaining the what, why, and how of your project. Use the following questions as a guide:
+# Pre-commit Jira Helper
 
-- What was your motivation?
-- Why did you build this project? (Note: the answer is not "Because it was a homework assignment.")
-- What problem does it solve?
-- What did you learn?
+A pre-commit hook that automatically prepends Jira issue numbers to your commit messages. Because who doesn't love a little automation magic sprinkled on their Git workflow? ✨
 
-![badmath](https://img.shields.io/github/languages/top/lernantino/badmath)
-
-<!-- Badges aren't necessary, per se, but they demonstrate street cred. Badges let other developers know that you know what you're doing. Check out the badges hosted by [shields.io](https://shields.io/). You may not understand what they all represent now, but you will in time. -->
-
-## Table of Contents (Optional)
-
-If your README is long, add a table of contents to make it easy for users to find what they need.
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Credits](#credits)
-- [License](#license)
-
-
-## Installation
-
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
-
-
-## Usage
-
-Provide instructions and examples for use. Include screenshots as needed.
-
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+- [Pre-commit Jira Helper](#pre-commit-jira-helper)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Basic Examples](#basic-examples)
+  - [Configuration](#configuration)
+  - [Developer Guide](#developer-guide)
+    - [Modular Architecture](#modular-architecture)
+      - [Step 1: Create Your Hook](#step-1-create-your-hook)
+      - [Step 2: Create CLI Wrapper](#step-2-create-cli-wrapper)
+      - [Step 3: Register in pyproject.toml](#step-3-register-in-pyprojecttoml)
+      - [Step 4: Add to .pre-commit-hooks.yaml](#step-4-add-to-pre-commit-hooksyaml)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [About Infinite Lambda](#about-infinite-lambda)
 
 ## Features
 
-If your project has a lot of features, list them here.
+- **Multiple Issue Support**: Extracts ALL Jira issues from branch names by default
+- **Smart Prefix Filtering**: Optionally restrict to specific project prefixes
+- **Intelligent Deduplication**: Skips issues already present in commit messages
+- **Flexible Patterns**: Customizable regex patterns for different Jira formats
 
+## Installation
 
-## How to Contribute
+Add this to your `.pre-commit-config.yaml`:
 
-If you created an application or package and would like other developers to contribute it, you can include guidelines for how to do so. The [Contributor Covenant](https://www.contributor-covenant.org/) is an industry standard, but you can always write your own if you'd prefer.
+```yaml
+repos:
+  - repo: https://github.com/infinitelambda/pre-commit-jira-helper
+    rev: v0.1.0  # Use the latest version
+    hooks:
+      - id: prepend-jira-issue
+        stages: [commit-msg]
+```
 
+Then install the hook:
 
-## Tests
+```bash
+pre-commit install --hook-type commit-msg
+```
 
-Go the extra mile and write tests for your application. Then provide examples on how to run them here.
+## Usage
 
+### Basic Examples
+
+**Single Issue:**
+```bash
+# Branch: feature/ABC-123-add-auth
+git commit -m "Add user authentication"
+# Result: "ABC-123: Add user authentication"
+```
+
+**Multiple Issues:**
+```bash
+# Branch: feature/ABC-123-DEF-456-new-feature  
+git commit -m "Implement new feature"
+# Result: "ABC-123, DEF-456: Implement new feature"
+```
+
+**With Prefix Filtering:**
+```bash
+# Branch: feature/ABC-123-XYZ-999-DEF-456-test
+# With --prefixes ABC,DEF
+git commit -m "Add tests"
+# Result: "ABC-123, DEF-456: Add tests" (XYZ-999 filtered out)
+```
+
+## Configuration
+
+Add this to your `.pre-commit-config.yaml`:
+
+```yaml
+fail_fast: true
+repos:
+  - repo: https://github.com/infinitelambda/pre-commit-jira-helper
+    rev: v0.1.0  # Use the latest version
+    hooks:
+      - id: prepend-jira-issue
+        stages: [commit-msg]
+        # Uncomment and customize these args as needed:
+        
+        # Basic usage - extracts ALL Jira issues matching the pattern:
+        # On branch 'feature/ABC-123-DEF-456-new-feature' -> 'ABC-123, DEF-456: commit message'
+        # (no args needed for default behavior)
+        
+        # Restrict to specific Jira project prefixes only:
+        # On branch 'feature/ABC-123-XYZ-999-DEF-456-test' -> 'ABC-123, DEF-456: commit message' 
+        # args: ["--prefixes", "ABC,DEF"]
+        
+        # Custom pattern and separator:
+        # args: ["--pattern", "[A-Z]{3,}-\\d+", "--separator", " - "]
+        
+        # Combine all options:
+        # args: ["--prefixes", "PROJ,TASK", "--pattern", "[A-Z]{3,}-\\d+", "--separator", " | "]
+
+      # CAUTION: This is only for example purposes
+      - id: example-prefix-hook
+        stages: [commit-msg]
+        args: ["--prefix", "[COMMIT]"]
+```
+
+See `.pre-commit-config.example.yaml` for more configuration examples.
+
+## Developer Guide
+
+### Modular Architecture
+
+The codebase is organized for easy extensibility. Want to add your own hook? It's as simple as extending our base classes!
+
+#### Step 1: Create Your Hook
+
+```python
+# pre_commit_jira_helper/hooks/my_hook.py
+from pre_commit_jira_helper.base import CommitMessageHook
+from pre_commit_jira_helper.logger import get_logger
+
+logger = get_logger("hooks.my_hook")
+
+class MyCustomHook(CommitMessageHook):
+    def should_run(self, commit_msg_filepath):
+        # Your logic here
+        return True
+    
+    def process(self, commit_msg_filepath):
+        # Your processing logic
+        return True
+```
+
+#### Step 2: Create CLI Wrapper
+
+```python
+# pre_commit_jira_helper/cli/my_hook.py
+from pre_commit_jira_helper.cli.base import create_parser
+from pre_commit_jira_helper.hooks.my_hook import MyCustomHook
+
+def main(argv=None):
+    parser = create_parser(
+        prog="my-custom-hook",
+        description="Description of my hook",
+        epilog="Examples and notes here"
+    )
+    # Add any custom arguments here
+    args = parser.parse_args(argv)
+    
+    hook = MyCustomHook(debug=args.debug)
+    return hook.run(commit_msg_filepath=args.commit_msg_filepath)
+```
+
+#### Step 3: Register in pyproject.toml
+
+```toml
+[project.scripts]
+my-custom-hook = "pre_commit_jira_helper.cli.my_hook:main"
+```
+
+#### Step 4: Add to .pre-commit-hooks.yaml
+
+```yaml
+- id: my-custom-hook
+  name: My Custom Hook
+  entry: my-custom-hook
+  language: python
+  description: Description of what your hook does
+  stages: [commit-msg]
+```
+
+That's it! Your hook is ready to use. We've included an example hook (`example-prefix-hook`) that demonstrates this pattern.
+
+## Contributing
+
+Contributions are welcome! Feel free to:
+
+- Report bugs or request features via [Issues](https://github.com/infinitelambda/pre-commit-jira-helper/issues)
+- Submit pull requests with improvements
+- Share your creative branch naming conventions (we've seen some wild ones!)
 
 ## License
 
-The last section of a high-quality README file is the license. This lets other developers know what they can and cannot do with your project.
+Apache License 2.0 - see [LICENSE](LICENSE) file for details.
 
-If you need help choosing a license, refer to [choosealicense.com](https://choosealicense.com/).
-
+---
 
 ## About Infinite Lambda
+
 Infinite Lambda is a cloud and data consultancy. We build strategies, help organisations implement them and pass on the expertise to look after the infrastructure.
 
 We are an Elite Snowflake Partner, a Platinum dbt Partner and two-times Fivetran Innovation Partner of the Year for EMEA.
 
 Naturally, we love exploring innovative solutions and sharing knowledge, so go ahead and:
 
-🔧 Take a look around our [Git](https://github.com/infinitelambda) </br>
+🔧 Take a look around our [Git](https://github.com/infinitelambda)  
 ✏️ Browse our [tech blog](https://infinitelambda.com/category/tech-blog/)
 
-We are also chatty, so:</br>
-#️⃣ Follow us on [LinkedIn](https://www.linkedin.com/company/infinite-lambda/) </br>
+We are also chatty, so:  
+#️⃣ Follow us on [LinkedIn](https://www.linkedin.com/company/infinite-lambda/)  
 👋🏼 Or just [get in touch](https://infinitelambda.com/contacts/)
 
 [<img src="https://raw.githubusercontent.com/infinitelambda/cdn/1.0.0/general/images/GitHub-About-Section-1080x1080.png" alt="About IL" width="500">](https://infinitelambda.com/)
