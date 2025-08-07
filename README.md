@@ -1,8 +1,8 @@
-# Pre-commit Jira Helper
+# pre-commit Jira Helper
 
-A pre-commit hook that automatically prepends Jira issue numbers to your commit messages. Because who doesn't love a little automation magic sprinkled on their Git workflow? ✨
+A [pre-commit](https://pre-commit.com/) hook that automatically prepends Jira issue numbers to your commit messages. Because who doesn't love a little automation magic sprinkled on their Git workflow? ✨
 
-- [Pre-commit Jira Helper](#pre-commit-jira-helper)
+- [pre-commit Jira Helper](#pre-commit-jira-helper)
   - [Features](#features)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -52,14 +52,14 @@ pre-commit install --hook-type commit-msg
 ```bash
 # Branch: feature/ABC-123-add-auth
 git commit -m "Add user authentication"
-# Result: "ABC-123: Add user authentication"
+# Actual commit message: "ABC-123: Add user authentication"
 ```
 
 **Multiple Issues:**
 ```bash
 # Branch: feature/ABC-123-DEF-456-new-feature  
 git commit -m "Implement new feature"
-# Result: "ABC-123, DEF-456: Implement new feature"
+# Actual commit message: "ABC-123, DEF-456: Implement new feature"
 ```
 
 **With Prefix Filtering:**
@@ -67,7 +67,7 @@ git commit -m "Implement new feature"
 # Branch: feature/ABC-123-XYZ-999-DEF-456-test
 # With --prefixes ABC,DEF
 git commit -m "Add tests"
-# Result: "ABC-123, DEF-456: Add tests" (XYZ-999 filtered out)
+# Actual commit message: "ABC-123, DEF-456: Add tests" (XYZ-999 filtered out)
 ```
 
 ## Configuration
