@@ -4,6 +4,7 @@
   entry: prepend-jira-issue
   language: python
   description: Automatically prepend Jira issue(s) from branch name to commit message
+  always_run: true
   pass_filenames: false
   stages: [commit-msg]
 
@@ -12,5 +13,6 @@
   entry: example-prefix-hook
   language: python
   description: Example hook that adds a custom prefix to commit messages
+  always_run: true
   pass_filenames: false
   stages: [commit-msg]
