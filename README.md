@@ -90,15 +90,21 @@ repos:
         
         # Restrict to specific Jira project prefixes only:
         # On branch 'feature/ABC-123-XYZ-999-DEF-456-test' -> 'ABC-123, DEF-456: commit message' 
-        # args: ["--prefixes", "ABC,DEF"]
+        args:
+          - "--prefixes=ABC,DEF"
         
         # Custom pattern and separator:
-        # args: ["--pattern", "[A-Z]{3,}-\\d+", "--separator", " - "]
+        args:
+          - "--pattern=[A-Z]{3,}-\\d+"
+          - "--separator= - "
         
         # Combine all options:
-        # args: ["--prefixes", "PROJ,TASK", "--pattern", "[A-Z]{3,}-\\d+", "--separator", " | "]
+        args:
+          - "--prefixes=PROJ,TASK"
+          - "--pattern=[A-Z]{3,}-\\d+"
+          - "--separator= | "
 
-      # CAUTION: This is only for example purposes
+      # !CAUTION: This is only for example purposes
       - id: example-prefix-hook
         stages: [commit-msg]
         args: ["--prefix", "[COMMIT]"]

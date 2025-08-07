@@ -130,7 +130,7 @@ class JiraIssuePrependHook(CommitMessageHook):
         """
         # Prepend all new issues to message
         issues_str = ", ".join(self.new_issues)
-        new_message = f"{issues_str}{self.separator}{self.commit_msg}"
+        new_message = f"{issues_str}{self.separator} {self.commit_msg}"
         logger.info(f"Prepending issues ({issues_str}) to commit message")
 
         # Write updated message
