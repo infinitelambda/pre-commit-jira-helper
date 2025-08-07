@@ -52,14 +52,16 @@ pre-commit install --hook-type commit-msg
 ```bash
 # Branch: feature/ABC-123-add-auth
 git commit -m "Add user authentication"
-# Actual commit message: "ABC-123: Add user authentication"
+# Actual commit message: 
+"ABC-123: Add user authentication"
 ```
 
 **Multiple Issues:**
 ```bash
 # Branch: feature/ABC-123-DEF-456-new-feature  
 git commit -m "Implement new feature"
-# Actual commit message: "ABC-123, DEF-456: Implement new feature"
+# Actual commit message: 
+"ABC-123, DEF-456: Implement new feature"
 ```
 
 **With Prefix Filtering:**
@@ -67,7 +69,8 @@ git commit -m "Implement new feature"
 # Branch: feature/ABC-123-XYZ-999-DEF-456-test
 # With --prefixes ABC,DEF
 git commit -m "Add tests"
-# Actual commit message: "ABC-123, DEF-456: Add tests" (XYZ-999 filtered out)
+# Actual commit message: 
+"ABC-123, DEF-456: Add tests" # (XYZ-999 filtered out)
 ```
 
 ## Configuration
