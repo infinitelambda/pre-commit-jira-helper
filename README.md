@@ -21,7 +21,6 @@ A [pre-commit](https://pre-commit.com/) hook that automatically prepends Jira is
 ## Features
 
 - **Multiple Issue Support**: Extracts ALL Jira issues from branch names by default
-- **Smart Prefix Filtering**: Optionally restrict to specific project prefixes
 - **Intelligent Deduplication**: Skips issues already present in commit messages
 - **Flexible Patterns**: Customizable regex patterns for different Jira formats
 
