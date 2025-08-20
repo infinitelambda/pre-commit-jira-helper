@@ -34,7 +34,7 @@ Examples:
     prepend-jira-issue --pattern "[A-Z]{3,}-\\d+" --separator ": " COMMIT_MSG_FILE
 
 Notes:
-  - Default pattern: [A-Z]{2,}-\\d+ (PROJECT-NUMBER format)
+  - Default pattern: [A-Z][A-Z0-9_]*-\\d+ (PROJECT-NUMBER format, matches Atlassian's pattern)
   - Without --prefixes: Extracts ALL issues matching the pattern
   - With --prefixes: Extracts ONLY issues with specified prefixes
   - Multiple issues are joined with commas: "ABC-123, DEF-456: message"
@@ -46,7 +46,7 @@ Notes:
     parser.add_argument(
         "--pattern",
         type=str,
-        help="Custom regex pattern for issue extraction (default: [A-Z]{2,}-\\d+)",
+        help="Custom regex pattern for issue extraction (default: [A-Z][A-Z0-9_]*-\\d+)",
     )
     parser.add_argument(
         "--separator",

@@ -13,7 +13,7 @@ class TestJiraIssuePrependHook:
         hook = JiraIssuePrependHook()
 
         assert hook.debug is False
-        assert hook.issue_pattern == r"[A-Z]{2,}-\d+"
+        assert hook.issue_pattern == r"[A-Z][A-Z0-9_]*-\d+"
         assert hook.separator == ": "
         assert hook.allowed_prefixes is None
 

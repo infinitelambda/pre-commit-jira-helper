@@ -33,7 +33,7 @@ class JiraIssuePrependHook(CommitMessageHook):
                              If None, all issues matching the pattern will be extracted.
         """
         super().__init__(debug=debug)
-        self.issue_pattern = issue_pattern or r"[A-Z]{2,}-\d+"
+        self.issue_pattern = issue_pattern or r"[A-Z][A-Z0-9_]*-\d+"
         self.separator = separator
         self.allowed_prefixes = allowed_prefixes
         self.git = GitOperations()
