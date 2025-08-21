@@ -31,7 +31,7 @@ Add this to your `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/infinitelambda/pre-commit-jira-helper
-    rev: v0.1.0  # Use the latest version
+    rev: v1.1.0  # Always check the latest version
     hooks:
       - id: prepend-jira-issue
         stages: [commit-msg]
